@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.github.zakiis</groupId>
+	<artifactId>zakiis-util</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>zakiis-util</name>
+	<description>zakiis util</description>
+	<url>https://github.com/zakiis/zakiis-util</url>
+	
+	<modules>
+		<module>zakiis-core</module>
+		<module>zakiis-security</module>
+	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+	
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Liu Zhenghua</name>
+			<email>1090179900@qq.com</email>
+			<organization>Sonatype</organization>
+			<organizationUrl>http://www.sonatype.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com:zakiis/zakiis-release.git</connection>
+		<developerConnection>scm:git:ssh://github.com:zakiis/zakiis-release.git</developerConnection>
+		<url>http://github.com/zakiis/zakiis-release/tree/main</url>
+	</scm>
+	
+</project>
