@@ -39,9 +39,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com:zakiis/zakiis-release.git</connection>
-		<developerConnection>scm:git:ssh://github.com:zakiis/zakiis-release.git</developerConnection>
-		<url>http://github.com/zakiis/zakiis-release/tree/main</url>
+		<connection>scm:git:git://github.com:zakiis/zakiis-util.git</connection>
+		<developerConnection>scm:git:ssh://github.com:zakiis/zakiis-util.git</developerConnection>
+		<url>http://github.com/zakiis/zakiis-util/tree/main</url>
 	</scm>
 	
 	<build>
