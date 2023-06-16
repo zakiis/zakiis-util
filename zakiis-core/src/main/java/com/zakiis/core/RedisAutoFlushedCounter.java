@@ -1,33 +1,37 @@
 package com.zakiis.core;
 
+import java.time.Duration;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 public class RedisAutoFlushedCounter extends AutoFlushedCounter {
 	
-	private final RedisTemplate<String, Object> redisTemplate;
+	private final StringRedisTemplate redisTemplate;
 	/** 给个prefix可以防止不同的Counter实例数据重叠了 */
-	private final String keySuffix;
+	private final String keyPrefix;
+	private final long keyExpireMillis;
 	
 	public RedisAutoFlushedCounter(Integer maxFlushSize, Long flushIntervalMills
-			, BiConsumer<Object, Long> flushMethod, RedisTemplate<String, Object> redisTemplate) {
-		this(maxFlushSize, flushIntervalMills, flushMethod, redisTemplate, RandomStringUtils.randomAlphabetic(6));
+			, BiConsumer<Object, Long> flushMethod, StringRedisTemplate redisTemplate) {
+		this(maxFlushSize, flushIntervalMills, flushMethod, redisTemplate, "counter:" + RandomStringUtils.randomAlphabetic(6));
 	}
 	
 	public RedisAutoFlushedCounter(Integer maxFlushSize, Long flushIntervalMills
-			, BiConsumer<Object, Long> flushMethod, RedisTemplate<String, Object> redisTemplate
-			, String keySuffix) {
+			, BiConsumer<Object, Long> flushMethod, StringRedisTemplate redisTemplate
+			, String keyPrefix) {
 		super(maxFlushSize, flushIntervalMills, flushMethod);
 		this.redisTemplate = redisTemplate;
-		this.keySuffix = keySuffix;
+		this.keyPrefix = keyPrefix;
+		keyExpireMillis = flushIntervalMills * 10;
 	}
 
 	@Override
 	public void increNotFlushedCount(Object key) {
 		String redisKey = getRedisKey(key);
 		redisTemplate.opsForValue().increment(redisKey);
+		redisTemplate.expire(redisKey, Duration.ofMillis(keyExpireMillis));
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class RedisAutoFlushedCounter extends AutoFlushedCounter {
 	}
 	
 	private String getRedisKey(Object key) {
-		return key.toString() + "_" + keySuffix;
+		return keyPrefix + ":" + key.toString();
 	}
 
 	

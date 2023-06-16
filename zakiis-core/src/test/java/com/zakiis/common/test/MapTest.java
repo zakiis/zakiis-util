@@ -1,0 +1,50 @@
+package com.zakiis.common.test;
+
+import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import com.zakiis.core.map.AutoFlushedHashMap;
+import com.zakiis.core.map.SizedHashMap;
+
+public class MapTest {
+
+	@Test
+	public void testSizedHashMap() {
+		Map<String, Object> map = new SizedHashMap<String, Object>(2);
+		map.put("1001", "zhangsan");
+		map.put("1002", "lisi");
+		System.out.println(map);
+		map.put("1003", "wangwu");
+		System.out.println(map);
+		
+	}
+	
+	@Test
+	public void testAutoFlushedHashMap() throws InterruptedException {
+		Map<String, String> map = new AutoFlushedHashMap<String, String>(2, 5000L, MapTest::flushValue);
+		map.put("1001", "zhangsan");
+		Thread.sleep(3000L);
+		map.put("1002", "lisi");
+		System.out.println(map);
+		Thread.sleep(3000L);
+		System.out.println("key 1001 would be expired: " + map);
+		System.out.println("the value of 1003 is: " + map.get("1003"));
+		System.out.println(map);
+		System.out.println("the value of 1001 is: " + map.get("1001"));
+		System.out.println("key 1002 would be evicted cause of the threshold: " + map);
+		Thread.sleep(5100L);
+		System.out.println("all keys expired: " + map);
+	}
+	
+	public static String flushValue(String key) {
+		if (key.equals("1001")) {
+			return "flushed zhangsan";
+		} else if (key.equals("1002")) {
+			return "flushed lisi";
+		} else if (key.equals("1003")) {
+			return "flushed wangwu";
+		}
+		return "not found";
+	}
+}
