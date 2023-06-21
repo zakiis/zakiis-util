@@ -6,6 +6,7 @@ public enum CommonResps implements Resp {
 	UNAUTHORIZED("401", "unauthrozied"),
 	PARAMETER_INVALID("102000", "parameter invalid"),
 	RUNTIME_ERROR("103000", "runtime error"),
+	BUSINESS_ERROR("200000", "business error"),
 	UNKNOWN_ERROR("999999", "unknown error")
 	;
 

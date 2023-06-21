@@ -2,8 +2,8 @@ package com.zakiis.security;
 
 import java.util.Set;
 
+import com.zakiis.core.exception.web.ForbiddenException;
 import com.zakiis.security.annotation.Permission;
-import com.zakiis.security.exception.NoPermissionException;
 
 public class PermissionUtil {
 
@@ -14,16 +14,16 @@ public class PermissionUtil {
 	 */
 	public static void checkPrivileges(Set<String> ownedFunctionCodes, Permission permission) {
 		if (permission == null) {
-			throw new NoPermissionException("There is no @Permission on this method.");
+			throw new ForbiddenException("There is no @Permission on this method.");
 		}
 		if (permission.bypass()) {
 			return;
 		}
 		if (permission.code() == null || permission.code().length == 0) {
-			throw new NoPermissionException("No roles can access this method, please contact administrator");
+			throw new ForbiddenException("No one can access this method because of the perssion code list is empty, please contact administrator");
 		}
 		if (ownedFunctionCodes == null || ownedFunctionCodes.size() == 0) {
-			throw new NoPermissionException("User don't have privilege on this method, please contact administrator.");
+			throw new ForbiddenException("User don't have privilege on this method, please contact administrator.");
 		}
 		boolean hasPermission = false;
 		for (String code : permission.code()) {
@@ -33,7 +33,7 @@ public class PermissionUtil {
 			}
 		}
 		if (!hasPermission) {
-			throw new NoPermissionException("User don't have privilege on this method, please contact administrator.");
+			throw new ForbiddenException("User don't have privilege on this method, please contact administrator.");
 		}
 	}
 }

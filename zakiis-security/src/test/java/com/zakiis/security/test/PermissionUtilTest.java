@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.zakiis.core.exception.web.ForbiddenException;
 import com.zakiis.security.PermissionUtil;
 import com.zakiis.security.annotation.Permission;
-import com.zakiis.security.exception.NoPermissionException;
 
 public class PermissionUtilTest {
 	
@@ -27,8 +27,8 @@ public class PermissionUtilTest {
 		try {
 			Permission permission2 = PermissionUtilTest.class.getMethod("orderModify").getAnnotation(Permission.class);
 			PermissionUtil.checkPrivileges(userRoles, permission2);
-		} catch (NoPermissionException e) {
-			log.info("user don't have access on order modify method");
+		} catch (ForbiddenException e) {
+			log.info("user don't have privileges on order modify method");
 		}
 	}
 	
