@@ -81,7 +81,11 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 	private synchronized V flushValue(K key) {
 		V v = super.get(key);
 		if (v == null) {
-			v = flushMethod.apply(key);
+			try {
+				v = flushMethod.apply(key);
+			} catch (Throwable e) {
+				log.warn("flush value for key {} got an exception", key, e);
+			}
 		}
 		return v;
 	}
