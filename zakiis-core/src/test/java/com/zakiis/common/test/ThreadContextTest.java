@@ -19,14 +19,14 @@ public class ThreadContextTest {
 			@Override
 			public void run() {
 				context.put("key1", "world");
-				String value = context.get("key1", String.class);
+				String value = context.get("key1");
 				assertEquals(value, "world");
 			}
 		}).start();
-		String value = context.get("key1", String.class);
+		String value = context.get("key1");
 		assertEquals(value, "hello");
 		context.clear();
-		assertNull(context.get("key1", String.class));
+		assertNull(context.get("key1"));
 	}
 
 }

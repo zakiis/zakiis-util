@@ -15,7 +15,7 @@ public class ThreadContext {
 	};
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(String key, Class<?> clazz) {
+	public <T> T get(String key) {
 		return (T)threadLocal.get().get(key);
 	}
 	
