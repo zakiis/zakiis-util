@@ -48,7 +48,6 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 		}
 		if (needFlushValue) {
 			v = flushValue((K)key);
-			put((K)key, v);
 		}
 		return v;
 	}
@@ -83,6 +82,7 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 		if (v == null) {
 			try {
 				v = flushMethod.apply(key);
+				put((K)key, v);
 			} catch (Throwable e) {
 				log.warn("flush value for key {} got an exception", key, e);
 			}

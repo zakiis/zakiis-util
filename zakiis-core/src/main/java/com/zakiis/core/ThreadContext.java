@@ -26,6 +26,11 @@ public class ThreadContext {
 		return oldValue;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public <T> T remove(String key) {
+		return (T)threadLocal.get().remove(key);
+	}
+	
 	public void clear() {
 		threadLocal.remove();
 	}
