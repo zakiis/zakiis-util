@@ -43,7 +43,8 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 			needFlushValue = true;
 		} else if (expireTime < System.currentTimeMillis()) {
 			log.debug("key {} expired, would be evicted.");
-			remove(key);
+			// It's no use for removing the expired key while get this key.
+//			remove(key);
 			needFlushValue = true;
 		}
 		if (needFlushValue) {
@@ -54,8 +55,10 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 
 	@Override
 	public V put(K key, V value) {
+		// put value before expiredTime to avoid the senario: expireTime exists but value is null.
+		super.put(key, value)
 		keyExpireTimeMap.put(key, System.currentTimeMillis() + ttl);
-		return super.put(key, value);
+		return value;
 	}
 
 	@Override
