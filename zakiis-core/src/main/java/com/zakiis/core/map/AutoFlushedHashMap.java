@@ -1,16 +1,18 @@
 package com.zakiis.core.map;
 
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 
+	@Serial
 	private static final long serialVersionUID = 1930109507293403128L;
 	/** TTL for the entry, default is 5 minutes */
 	protected static final Long DEFAULT_TTL = 5 * 60 * 1000L;
@@ -42,7 +44,7 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 		if (expireTime == null) {
 			needFlushValue = true;
 		} else if (expireTime < System.currentTimeMillis()) {
-			log.debug("key {} expired, would be evicted.");
+			log.debug("key {} expired, would be evicted.", key);
 			// It's no use for removing the expired key while get this key.
 //			remove(key);
 			needFlushValue = true;
@@ -55,8 +57,8 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 
 	@Override
 	public V put(K key, V value) {
-		// put value before expiredTime to avoid the senario: expireTime exists but value is null.
-		super.put(key, value)
+		// put value before expiredTime to avoid the scenario: expireTime exists but value is null.
+		super.put(key, value);
 		keyExpireTimeMap.put(key, System.currentTimeMillis() + ttl);
 		return value;
 	}
@@ -85,7 +87,7 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 		if (v == null) {
 			try {
 				v = flushMethod.apply(key);
-				put((K)key, v);
+				put(key, v);
 			} catch (Throwable e) {
 				log.warn("flush value for key {} got an exception", key, e);
 			}
