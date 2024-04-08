@@ -38,21 +38,10 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public V get(Object key) {
-		V v = super.get(key);
-		Long expireTime = keyExpireTimeMap.get(key);
-		boolean needFlushValue = false;
-		if (expireTime == null) {
-			needFlushValue = true;
-		} else if (expireTime < System.currentTimeMillis()) {
-			log.debug("key {} expired, would be evicted.", key);
-			// It's no use for removing the expired key while get this key.
-//			remove(key);
-			needFlushValue = true;
+		if (hasValidValue((K) key)) {
+			return super.get(key);
 		}
-		if (needFlushValue) {
-			v = flushValue((K)key);
-		}
-		return v;
+		return flushValue((K)key);
 	}
 
 	@Override
@@ -83,15 +72,25 @@ public class AutoFlushedHashMap<K, V> extends SizedHashMap<K, V> {
 	}
 
 	private synchronized V flushValue(K key) {
-		V v = super.get(key);
-		if (v == null) {
-			try {
-				v = flushMethod.apply(key);
-				put(key, v);
-			} catch (Throwable e) {
-				log.warn("flush value for key {} got an exception", key, e);
-			}
+		if (hasValidValue(key)) {
+			return super.get(key);
 		}
-		return v;
+		try {
+			V v = flushMethod.apply(key);
+			put(key, v);
+			return v;
+		} catch (Throwable e) {
+			log.warn("flush value for key {} got an exception", key, e);
+			return super.get(key);
+		}
+	}
+
+	private boolean hasValidValue(K key) {
+		V v = super.get(key);
+		Long expireTime = keyExpireTimeMap.get(key);
+		if (v == null || expireTime == null || expireTime < System.currentTimeMillis()) {
+			return false;
+		}
+		return true;
 	}
 }
